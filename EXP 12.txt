@@ -1,0 +1,44 @@
+#Query
+CREATE OR REPLACE TRIGGER trg_before_insert_emp
+BEFORE INSERT ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Adding new employee: ' || :NEW.First_name || ' ' || :NEW.Last_name);
+END;
+
+
+#Query
+CREATE OR REPLACE TRIGGER trg_after_insert_salary
+AFTER INSERT ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Inserted salary: ' || :NEW.Salary);
+END;
+
+
+#Query
+CREATE OR REPLACE TRIGGER trg_before_update_salary
+BEFORE UPDATE OF Salary ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Old Salary: ' || :OLD.Salary || ', New Salary: ' || :NEW.Salary);
+END;
+
+
+#Query
+CREATE OR REPLACE TRIGGER trg_before_update_salary
+BEFORE UPDATE OF Salary ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Old Salary: ' || :OLD.Salary || ', New Salary: ' || :NEW.Salary);
+END;
+
+#Query
+CREATE OR REPLACE TRIGGER trg_prevent_high_salary_delete
+BEFORE DELETE ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+  IF :OLD.Salary > 10000 THEN
+    RAISE_APPLICATION_ERROR(-20001, 'Cannot delete employees with salary > 10000');
+  END IF;
+END;

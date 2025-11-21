@@ -1,0 +1,69 @@
+#Query
+CREATE OR REPLACE PACKAGE emp_pkg IS
+  PROCEDURE show_emp(p_id EMPLOYEES.Employee_id%TYPE);
+  FUNCTION get_salary(p_id EMPLOYEES.Employee_id%TYPE) RETURN NUMBER;
+END emp_pkg;
+
+
+#Query
+CREATE OR REPLACE PACKAGE BODY emp_pkg IS
+
+  PROCEDURE show_emp(p_id EMPLOYEES.Employee_id%TYPE) IS
+    v_name EMPLOYEES.First_name%TYPE;
+  BEGIN
+    SELECT First_name INTO v_name FROM EMPLOYEES WHERE Employee_id = p_id;
+    DBMS_OUTPUT.PUT_LINE('Employee Name: ' || v_name);
+  END;
+
+  FUNCTION get_salary(p_id EMPLOYEES.Employee_id%TYPE) RETURN NUMBER IS
+    v_salary EMPLOYEES.Salary%TYPE;
+  BEGIN
+    SELECT Salary INTO v_salary FROM EMPLOYEES WHERE Employee_id = p_id;
+    RETURN v_salary;
+  END;
+
+END emp_pkg;
+
+
+#Query
+BEGIN
+  emp_pkg.show_emp(101);
+  DBMS_OUTPUT.PUT_LINE('Salary: ' || emp_pkg.get_salary(101));
+END;
+
+
+#Query
+DECLARE
+  TYPE salary_array IS VARRAY(5) OF NUMBER;
+  salaries salary_array := salary_array(5000, 6000, 7000, 8000, 9000);
+BEGIN
+  FOR i IN 1..salaries.COUNT LOOP
+    DBMS_OUTPUT.PUT_LINE('Salary ' || i || ': ' || salaries(i));
+  END LOOP;
+END;
+
+
+#Query
+DECLARE
+  TYPE name_table IS TABLE OF VARCHAR2(30);
+  emp_names name_table := name_table('Ravi', 'Priya', 'Kumar');
+BEGIN
+  FOR i IN 1..emp_names.COUNT LOOP
+    DBMS_OUTPUT.PUT_LINE('Employee Name: ' || emp_names(i));
+  END LOOP;
+END;
+
+
+#Query
+DECLARE
+  TYPE emp_map IS TABLE OF VARCHAR2(30) INDEX BY BINARY_INTEGER;
+  emp_names emp_map;
+BEGIN
+  emp_names(101) := 'Ravi';
+  emp_names(102) := 'Priya';
+  emp_names(103) := 'Kumar';
+
+  FOR i IN 101..103 LOOP
+    DBMS_OUTPUT.PUT_LINE('ID: ' || i || ', Name: ' || emp_names(i));
+  END LOOP;
+END;

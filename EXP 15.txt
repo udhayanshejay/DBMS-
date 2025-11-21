@@ -1,0 +1,112 @@
+#Query
+-- DELETE: Removes specific rows
+DELETE FROM EMPLOYEES WHERE Department_id = 10;
+
+-- TRUNCATE: Removes all rows, cannot be rolled back
+TRUNCATE TABLE EMPLOYEES;
+
+-- DROP: Removes table structure and data
+DROP TABLE EMPLOYEES;
+
+
+#Query
+-- PRIMARY KEY: No duplicates, no NULLs
+CREATE TABLE DEPT (
+  Dept_id NUMBER PRIMARY KEY,
+  Dept_name VARCHAR2(30)
+);
+
+#Query
+-- UNIQUE: No duplicates, allows NULLs
+CREATE TABLE EMP (
+  Email VARCHAR2(50) UNIQUE,
+  Name VARCHAR2(30)
+);
+
+#Query
+SELECT First_name, Salary
+FROM EMPLOYEES E
+WHERE Salary > (
+  SELECT AVG(Salary)
+  FROM EMPLOYEES
+  WHERE Department_id = E.Department_id
+);
+
+#Query
+UPDATE EMPLOYEES SET Salary = Salary + 500 WHERE Employee_id = 101;
+SAVEPOINT sp1;
+
+UPDATE EMPLOYEES SET Salary = Salary + 1000 WHERE Employee_id = 102;
+ROLLBACK TO sp1;
+COMMIT;
+
+
+
+#Query
+-- BEFORE INSERT Trigger
+CREATE OR REPLACE TRIGGER trg_before_insert
+BEFORE INSERT ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Inserting: ' || :NEW.First_name);
+END;
+
+
+#Query
+BEGIN
+  SELECT Salary INTO :v_salary FROM EMPLOYEES WHERE Employee_id = 999;
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Employee not found.');
+END;
+
+
+#Query
+-- UNION: Removes duplicates
+SELECT Employee_id FROM EMPLOYEES
+UNION
+SELECT EmpNo FROM EMP;
+
+-- UNION ALL: Keeps duplicates
+SELECT Employee_id FROM EMPLOYEES
+UNION ALL
+SELECT EmpNo FROM EMP;
+
+
+#Query
+CREATE VIEW emp_dept10 AS
+SELECT * FROM EMPLOYEES WHERE Department_id = 10
+WITH CHECK OPTION;
+
+
+#Query
+DECLARE
+  v_salary EMPLOYEES.Salary%TYPE;
+  v_emp EMPLOYEES%ROWTYPE;
+BEGIN
+  SELECT Salary INTO v_salary FROM EMPLOYEES WHERE Employee_id = 101;
+  SELECT * INTO v_emp FROM EMPLOYEES WHERE Employee_id = 101;
+END;
+
+
+#Query
+-- Package Spec
+CREATE OR REPLACE PACKAGE emp_pkg IS
+  PROCEDURE show_emp(p_id EMPLOYEES.Employee_id%TYPE);
+END emp_pkg;
+
+#Query
+-- Package Body
+CREATE OR REPLACE PACKAGE BODY emp_pkg IS
+  PROCEDURE show_emp(p_id EMPLOYEES.Employee_id%TYPE) IS
+    v_name EMPLOYEES.First_name%TYPE;
+  BEGIN
+    SELECT First_name INTO v_name FROM EMPLOYEES WHERE Employee_id = p_id;
+    DBMS_OUTPUT.PUT_LINE('Name: ' || v_name);
+  END;
+END emp_pkg;
+
+-- Execution
+BEGIN
+  emp_pkg.show_emp(101);
+END;

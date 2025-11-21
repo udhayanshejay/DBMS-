@@ -1,0 +1,77 @@
+#Query
+CREATE OR REPLACE PROCEDURE welcome_message IS
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Welcome to Stored Procedures!');
+END;
+
+#Query
+BEGIN
+  welcome_message;
+END;
+
+
+#Query
+CREATE OR REPLACE PROCEDURE show_employee (
+  p_id IN EMPLOYEES.Employee_id%TYPE
+) IS
+  v_name EMPLOYEES.First_name%TYPE;
+  v_salary EMPLOYEES.Salary%TYPE;
+BEGIN
+  SELECT First_name, Salary INTO v_name, v_salary
+  FROM EMPLOYEES
+  WHERE Employee_id = p_id;
+
+  DBMS_OUTPUT.PUT_LINE('Name: ' || v_name || ', Salary: ' || v_salary);
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Employee not found.');
+END;
+
+
+#Query
+BEGIN
+  show_employee(101);
+END;
+
+#Query
+CREATE OR REPLACE FUNCTION get_annual_salary (
+  p_salary IN EMPLOYEES.Salary%TYPE
+) RETURN NUMBER IS
+BEGIN
+  RETURN p_salary * 12;
+END;
+
+#Query
+DECLARE
+  v_annual NUMBER;
+BEGIN
+  v_annual := get_annual_salary(5000);
+  DBMS_OUTPUT.PUT_LINE('Annual Salary: ' || v_annual);
+END;
+
+
+#Query
+CREATE OR REPLACE FUNCTION get_full_name (
+  p_id IN EMPLOYEES.Employee_id%TYPE
+) RETURN VARCHAR2 IS
+  v_fname EMPLOYEES.First_name%TYPE;
+  v_lname EMPLOYEES.Last_name%TYPE;
+BEGIN
+  SELECT First_name, Last_name INTO v_fname, v_lname
+  FROM EMPLOYEES
+  WHERE Employee_id = p_id;
+
+  RETURN v_fname || ' ' || v_lname;
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    RETURN 'Unknown Employee';
+END;
+
+
+#Query
+DECLARE
+  v_name VARCHAR2(50);
+BEGIN
+  v_name := get_full_name(101);
+  DBMS_OUTPUT.PUT_LINE('Full Name: ' || v_name);
+END;

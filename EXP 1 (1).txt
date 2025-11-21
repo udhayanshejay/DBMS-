@@ -1,0 +1,58 @@
+#QUERY
+CREATE TABLE MY_EMPLOYEE (
+  ID NUMBER(4) NOT NULL,
+  Last_name VARCHAR2(25),
+  First_name VARCHAR2(25),
+  Userid VARCHAR2(25),
+  Salary NUMBER(9,2)
+);
+UPDATE MY_EMPLOYEE
+SET Last_name = NULL, First_name = NULL, Userid = NULL, Salary = NULL
+WHERE ID = 4;
+
+#QUERY
+INSERT INTO MY_EMPLOYEE VALUES (1, 'Patel', 'Ralph', 'rpatel', 895);
+INSERT INTO MY_EMPLOYEE VALUES (2, 'Dancs', 'Betty', 'bdancs', 860);
+
+#QUERY
+SELECT * FROM MY_EMPLOYEE;
+
+#QUERY
+SELECT * FROM MY_EMPLOYEE;
+
+#QUERY
+INSERT INTO MY_EMPLOYEE VALUES (
+  3, 'Biri', 'Ben', SUBSTR('Ben', 1, 1) || SUBSTR('Biri', 1, 7), 1100
+);
+
+INSERT INTO MY_EMPLOYEE VALUES (
+  4, 'Newman', 'Chad', SUBSTR('Chad', 1, 1) || SUBSTR('Newman', 1, 7), 750
+);
+
+
+#QUERY
+DELETE FROM MY_EMPLOYEE WHERE Last_name = 'Dancs' AND First_name = 'Betty';
+
+#QUERY
+UPDATE MY_EMPLOYEE
+SET Last_name = NULL, First_name = NULL, Userid = NULL, Salary = NULL
+WHERE ID = 4;
+
+#QUERY
+
+UPDATE MY_EMPLOYEE
+SET Last_name = 'Drexler'
+WHERE ID = 3;
+
+#QUERY
+COMMIT;
+
+#QUERY
+UPDATE MY_EMPLOYEE
+SET Last_name = 'Drexler'
+WHERE ID = 3;
+
+#QUERY
+UPDATE MY_EMPLOYEE
+SET Salary = 1000
+WHERE Salary < 900;
