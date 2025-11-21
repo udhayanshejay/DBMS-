@@ -1,0 +1,46 @@
+#Query
+CREATE OR REPLACE DIRECTORY my_dir AS 'C:\oracle\files';
+GRANT READ, WRITE ON DIRECTORY my_dir TO PUBLIC;
+
+#Query
+DECLARE
+  file_handle UTL_FILE.FILE_TYPE;
+BEGIN
+  file_handle := UTL_FILE.FOPEN('MY_DIR', 'emp_data.txt', 'W');
+  UTL_FILE.PUT_LINE(file_handle, 'Employee Report');
+  UTL_FILE.PUT_LINE(file_handle, '----------------');
+  UTL_FILE.PUT_LINE(file_handle, 'ID | Name | Salary');
+
+  FOR emp IN (SELECT Employee_id, First_name, Salary FROM EMPLOYEES) LOOP
+    UTL_FILE.PUT_LINE(file_handle, emp.Employee_id || ' | ' || emp.First_name || ' | ' || emp.Salary);
+  END LOOP;
+
+  UTL_FILE.FCLOSE(file_handle);
+END;
+
+#Query
+DECLARE
+  file_handle UTL_FILE.FILE_TYPE;
+  line_content VARCHAR2(100);
+BEGIN
+  file_handle := UTL_FILE.FOPEN('MY_DIR', 'emp_data.txt', 'R');
+
+  LOOP
+    UTL_FILE.GET_LINE(file_handle, line_content);
+    DBMS_OUTPUT.PUT_LINE(line_content);
+  END LOOP;
+
+  UTL_FILE.FCLOSE(file_handle);
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    UTL_FILE.FCLOSE(file_handle);
+END;
+
+#Query
+DECLARE
+  file_handle UTL_FILE.FILE_TYPE;
+BEGIN
+  file_handle := UTL_FILE.FOPEN('MY_DIR', 'emp_data.txt', 'A');
+  UTL_FILE.PUT_LINE(file_handle, '--- End of Report ---');
+  UTL_FILE.FCLOSE(file_handle);
+END;
